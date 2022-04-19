@@ -6,21 +6,20 @@ const app = express()
 const port = process.env.PORT || 5000;
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
+app.use(cors())
 
 const pool  = mysql.createPool({
-    connectionLimit : 10,
     host            : 'localhost',
     user            : 'root',
     password        : '',
     database        : 'HrImpactdb'
 })
-app.get('/:id', (req, res) => {
+app.get('/home', (req, res) => {
     pool.getConnection((err, connection) => {
         if(err) throw err
         console.log('connected as id ' + connection.threadId)
-        connection.query('SELECT * FROM utilisateurs WHERE idutilisateur = ?', [req.params.id], (err, rows) => {
+        connection.query('SELECT * FROM utilisateur ',(err, rows) => {
             connection.release() // return the connection to pool
-
             if (!err) {
                 res.send(rows)
             } else {
